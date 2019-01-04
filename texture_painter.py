@@ -8,3 +8,6 @@ import os, sys; sys.path.append(os.path.dirname(bpy.data.filepath)); import text
 ## To reload after a code changes
 import importlib; importlib.reload(texture_painter); texture_painter.go()
 '''
+
+def go():
+    print("Texture Painter starting up.")
