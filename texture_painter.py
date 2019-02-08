@@ -43,8 +43,23 @@ def throw_invalid_selection():
     if len(bpy.context.selected_objects) > 1:
         raise Exception("Please select exactly one prototype object")
 
+def create_plaque(prototype, offset):
+    prototype.select = True
+    bpy.ops.object.duplicate_move(TRANSFORM_OT_translate={"value":offset})
+    new_plaque = bpy.context.selected_objects[0]
+    new_plaque.select = False
+    return new_plaque
+
+def blender_render_select():
+    bpy.context.scene.render.engine = 'BLENDER_RENDER'
+
 def go():
     print("Texture Painter starting up.")
+    blender_render_select()
+    print("Blender Render Selected")
     throw_invalid_selection()
     print("Prototype object found.")
     #read_csv()
+
+    prototype = bpy.context.selected_objects[0]
+    create_plaque(prototype, (0,-1,0))
