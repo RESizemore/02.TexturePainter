@@ -28,15 +28,6 @@ def render_text_to_file(text_to_render, to_filename):
     draw.text((0,0), text_to_render, font=fnt, fill=(255,255,255))
     image.save(to_filename)
 
-def read_csv():
-    cwd = os.path.dirname(bpy.data.filepath)
-    # Read through the CSV
-    for backer in get_backers('backers_10.csv'):
-        text_to_render = backer['Name'] + ', ' + backer['Country']
-        filename = cwd + '\\texture_cache\\' + backer['Number'] + '.png'
-        print("Rendering", text_to_render, "to", filename)
-        render_text_to_file(text_to_render, filename)
-
 def throw_invalid_selection():
     if len(bpy.context.selected_objects) == 0:
         raise Exception("Please select exactly one prototype object")
@@ -51,7 +42,25 @@ def create_plaque(prototype, offset):
     return new_plaque
 
 def blender_render_select():
-    bpy.context.scene.render.engine = 'BLENDER_RENDER'
+    bpy.context.scene.render.engine = "BLENDER_RENDER"
+
+def get_offset(num, columns, spacing):
+    """Return offset from prototype position.
+    Positional arguments:
+    num -- the number of the object, starting from 0
+    columns -- how many columns before wrapping
+    spacing -- a tuple of (x,y), spacing between objects
+    """
+    x_offset = (num % columns) * spacing[0] # x-spacing
+    y_offset = (num // columns) * spacing[1] # y-spacing
+    return (x_offset, y_offset)
+
+def swap_text(object, backer, index):
+    cwd = os.path.dirname(bpy.data.filepath)
+    text_to_render = backer['Name'] + ', ' + backer['Country']
+    filename = cwd + '\\texture_cache\\' + str(index) + '.png'
+    render_text_to_file(text_to_render, filename)
+    print("Swapping tecture to:", backer) # TODO actual swap
 
 def go():
     print("Texture Painter starting up.")
@@ -59,7 +68,11 @@ def go():
     print("Blender Render Selected")
     throw_invalid_selection()
     print("Prototype object found.")
-    #read_csv()
-
     prototype = bpy.context.selected_objects[0]
-    create_plaque(prototype, (0,-1,0))
+    for num, backer in enumerate(get_backers('backers_10.csv')):
+        if num == 0:
+            plaque = prototype
+        else:
+            x, y = get_offset(num, 3, (2,-1,0))
+            plaque = create_plaque(prototype, (x,y,0))
+        swap_text(plaque, backer, num)
