@@ -1,5 +1,5 @@
 """Renders text from a CSV file to textures
-and applies them to multiple objectsself.
+and applies them to multiple objects.
 
 Use Snippets...
 ## To load path on start
@@ -55,17 +55,17 @@ def get_offset(num, columns, spacing):
     y_offset = (num // columns) * spacing[1] # y-spacing
     return (x_offset, y_offset)
 
-def swap_texture_br(target_obj, image_filename, index):
-    """Swaps the first texture, on the first material to supplied input.
-    This method is designed for Blender Render materials.
-    """
-    mat = bpy.data.materials.new(name="Text Material " + str(index))
-    target_obj.material_slots[0].material = mat
-    tex = bpy.data.textures.new(name="Texture" + str(index),type='IMAGE')
-    target_obj.material_slots[0].material.texture_slots.add()
-    target_obj.material_slots[0].material.texture_slots[0].texture = tex
-    img = bpy.data.images.load(image_filename)
-    target_obj.material_slots[0].material.texture_slots[0].texture.image = img
+#def swap_texture_br(target_obj, image_filename, index):
+#    """Swaps the first texture, on the first material to supplied input.
+#    This method is designed for Blender Render materials.
+#    """
+#    mat = bpy.data.materials.new(name="Text Material " + str(index))
+#    target_obj.material_slots[0].material = mat
+#    tex = bpy.data.textures.new(name="Texture" + str(index),type='IMAGE')
+#    target_obj.material_slots[0].material.texture_slots.add()
+#    target_obj.material_slots[0].material.texture_slots[0].texture = tex
+#    img = bpy.data.images.load(image_filename)
+#    target_obj.material_slots[0].material.texture_slots[0].texture.image = img
 
 def swap_texture_cycles(target_obj, image_filename, index):
     new_material = target_obj.material_slots[0].material.copy()
